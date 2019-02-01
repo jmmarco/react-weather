@@ -1,6 +1,6 @@
 const axios = require('axios')
-const KEY = `17bf252c44d2fcc3aa20967c00704ada`
-const URL = `https://api.openweathermap.org/data/2.5/`
+// const KEY = `17bf252c44d2fcc3aa20967c00704ada`
+// const URL = `https://api.openweathermap.org/data/2.5/`
 
 
 // Tyler's URL: ${URL}/forecast/daily?q=${query}&type=accurate&APPID=${KEY}

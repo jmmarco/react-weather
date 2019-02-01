@@ -53,7 +53,8 @@ const inputStyle = {
   height: '34px',
   margin: '10px 0 0 0',
   border: '0',
-  fontSize: '22px'
+  fontSize: '22px',
+  padding: '5px'
 }
 
 
