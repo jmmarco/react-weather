@@ -3,6 +3,7 @@ import DailyForecast from './DailyForecast'
 
 const ForecastDetail = (props) => {
 
+  console.log(props)
   const { forecast } = props
   const { weather } = props.forecast
 

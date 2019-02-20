@@ -1,60 +1,31 @@
-import React, { Component } from 'react'
+import React from 'react'
 
-class WeatherSearch extends Component {
+const WeatherSearch = (props) => {
 
-  state = {
-    value: ''
-  }
-
-
-  componentDidMount() {
-    console.log('Weather Search')
-  }
-
-  handleChange = (event) => {
-    this.setState({ value: event.target.value })
-  }
-
-  // handleSubmit = (event) => {
-  //   console.log(event.key)
-  //   if (event.key === 13) {
-  //     console.log('Enter Key pressed!')
-  //     console.log(this.state.value)
-  //   }
-  //   event.preventDefault()
-  //   // Call API here?
-  // }
-
-  handleKeyPress(event) {
-    console.log(event.key)
-    if (event.key === 'Enter') {
-      console.log('Enter Key pressed!')
-      // console.log(this.state.value)
-      event.preventDefault()
-    }
-
-  }
-
-
-  render() {
-    return (
-      <form onSubmit={this.handleSubmit}>
-        {this.state.value}
-        <input type="search"  placeholder="Austin, TX" style={inputStyle} onChange={this.handleChange} value={this.state.value} onKeyPress={this.handleKeyPress} />
-      </form>
-    )
-  }
+  return (
+    <input
+      type="search"
+      placeholder="Austin, TX" 
+      style={inputStyle} 
+      onChange={props.handleChange} 
+      value={props.value} 
+      onKeyPress={props.handleKeyPress} 
+    />
+  )
 }
+
 
 const inputStyle = {
   outline: 'none',
+  fontWeight: '150',
   borderRadius: '4px',
   width: '200px',
-  height: '34px',
+  height: '44px',
   margin: '10px 0 0 0',
   border: '0',
   fontSize: '22px',
-  padding: '5px'
+  padding: '16px 12px',
+  lineHeight: '1.42857143'
 }
 
 
