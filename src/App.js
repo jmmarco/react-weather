@@ -1,19 +1,16 @@
 import React, { Component } from 'react'
 import Header from './components/Header'
+import Main from './components/Main'
+import ForecastDetail from './components/ForecastDetail'
 import * as API from './utils/api.js'
 import './App.css'
-import ForecastDetail from './components/ForecastDetail'
-import DailyForecast from './components/DailyForecast'
-import { BrowserRouter as Router, Route, Link, NavLink } from 'react-router-dom'
+import { BrowserRouter as Router, Route } from 'react-router-dom'
 import WeatherSearch from './components/WeatherSearch';
 
 class App extends Component {
 
   state = {
-    cityInfo: {
-      name: '',
-      country: ''
-    },
+    cityInfo: null,
     wForecast: null,
     value: '',
     error: null,
@@ -21,31 +18,26 @@ class App extends Component {
     unit: 'k'
   }
 
-  componentDidCatch() {
+
+  clearInput = () => {
     this.setState({
-      error: true,
-      errorMessage: 'something something'
+      wForecast: null,
+      error: false,
+      cityInfo: null,
+      value: ''
     })
+  }
+
+  handleClick = () => {
+    this.clearInput()
   }
 
   handleChange = (event) => {
     if (event.target.value.length === 0) {
       console.log('input is zero')
-      this.setState({
-        wForecast: null,
-        error: false
-      })
+      this.clearInput()
     }
     this.setState({ value: event.target.value })
-  }
-
-  convertTemp = () => {
-
-  }
-
-
-  handleTempChange = (unit) => {
-
   }
 
   handleKeyPress = (event) => {
@@ -61,14 +53,14 @@ class App extends Component {
         .then(results => {
           console.log(results)
 
-            this.setState({
-              wForecast: results.list,
-              loading: false,
-              cityInfo: {
-                name: results.city.name,
-                country: results.city.country
-              }
-            })
+          this.setState({
+            wForecast: results.list,
+            loading: false,
+            cityInfo: {
+              name: results.city.name,
+              country: results.city.country
+            }
+          })
 
         })
         .catch(error => {
@@ -81,58 +73,33 @@ class App extends Component {
   }
 
   render() {
-    const { loading, error, value, wForecast, } = this.state
 
-    if (wForecast) {
-
-      wForecast.forEach(f => console.log(f))
-      let found = wForecast.find(f => f.dt === 1550685600)
-      console.log(found)
-    }
-
-
+    const { wForecast, cityInfo } = this.state
 
     return (
       <Router>
         <div className="App">
-          <Header value={value} handleChange={this.handleChange} handleKeyPress={this.handleKeyPress} />
-          <main>
 
-            { error ? <p>{this.state.error}</p> :
-              loading ? <p>Loading...</p> :
+          <Route exact path="/" render={() => (
+            <div>
+              <Header value={this.state.value} handleChange={this.handleChange} handleKeyPress={this.handleKeyPress} />
+
+              {!cityInfo ?  (<WeatherSearch handleChange={this.handleChange} handleKeyPress={this.handleKeyPress} /> ) :
+
+              <h3 className="city-name">{cityInfo.name}, {cityInfo.country} <div className="clear-query"><span onClick={this.handleClick}>X</span></div></h3>
               
-                wForecast ?
-                  <section>
-                    <h3>{this.state.cityInfo.name}, {this.state.cityInfo.country}</h3>
-  
-                    <div className="Forecast-box"> 
-                      
-                      {/* {wForecast.map(f => <span key={f.dt}>Temp: {f.temp.day} K</span>)} */}
-                      {wForecast.map(f => <Link key={f.dt} to={`/forecast-detail/${f.dt}`}><DailyForecast forecast={f}/></Link>)}
-                    </div>
-                  </section>
-                : 
-                <Route exact path="/" render={() => (
-                  <div>
-                    <h2 className="App-Prompt">Enter City and State</h2>
-                    <WeatherSearch value={value} handleChange={this.handleChange} handleKeyPress={this.handleKeyPress}/>
-                  </div>
-                )}/>
+               }
+              
+              { wForecast && <Main wForecast={this.state.wForecast} handleChange={this.handleChange} handleKeyPress={this.handleKeyPress} /> }
+            </div>
+          )} />
 
-            }
+          { wForecast && <Route path="/forecast-detail/:dateTime" render={({match}) => (
+            <ForecastDetail forecast={wForecast.find(f => f.dt === Number(match.params.dateTime)) }/>
+          )}
 
-            {
-              wForecast && (
-                <Route exact path="/forecast-detail/:fId" render={({match}) => (
-                        <ForecastDetail forecast={wForecast.find(f => f.dt === Number(match.params.fId) )}/>
-               )}/>
-              )
-            }
-
-
-
-            
-          </main>
+          />}
+          
         </div>
       </Router>
     )
